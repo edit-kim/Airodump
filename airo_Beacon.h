@@ -1,5 +1,10 @@
 #pragma once
+#include <cstring>
+#include <iostream>
 
-struct Beacon_frame {
-    int Type_Beacon[4];
-};
+typedef struct BeaconFrame {
+    u_int8_t Type_Beacon;
+    char Receiver_address[12]; 
+    char Transmitter_address[12];
+    char BSSID[12];
+}BeaconFrame;

@@ -4,9 +4,9 @@
 #include <cstring>
 #include <string>
 
-struct WirelessManagement {
+typedef struct WirelessManagement {
     char Fixed_Parameters[12];
     char* SSID;
     char* Supported_Rates;
     int Current_Channel;
-};
+}WirelessManagement;

@@ -29,7 +29,6 @@ int main(int argc, char* argv[]) {
 
 	char* interface = argv[1];
 	char errbuf[PCAP_ERRBUF_SIZE];
-	// 1000 
 	pcap_t* pcap = pcap_open_live(interface, BUFSIZ, 1, 1000, errbuf);
 
 	// can't capture the pcap bcz of interface
@@ -57,31 +56,31 @@ int main(int argc, char* argv[]) {
 		}
 		printf("%u bytes captured\n", header->caplen);
 
-		memcpy(&airodump.RadiotapHeader.it_version, &packet[0], 1);
-		memcpy(&airodump.RadiotapHeader.it_len, &packet[2], 1);
-		memcpy(&airodump.RadiotapHeader.it_signal, &packet[18], 1);
+		memcpy(&airodump.radiotapHeader.it_version, &packet[0], 1);
+		memcpy(&airodump.radiotapHeader.it_len, &packet[2], 1);
+		memcpy(&airodump.radiotapHeader.it_signal, &packet[18], 1);
 
-		int header_len = airodump.RadiotapHeader.it_len;
+		int header_len = airodump.radiotapHeader.it_len;
 
-		memcpy(&airodump.BeaconFrame.Type_Beacon, &packet[header_len], 1);
-		memcpy(&airodump.BeaconFrame.Receiver_address, &packet[header_len + 4], 6);
+		memcpy(&airodump.beaconFrame.Type_Beacon, &packet[header_len], 1);
+		memcpy(&airodump.beaconFrame.Receiver_address, &packet[header_len + 4], 6);
 
-		memcpy(&airodump.BeaconFrame.Transmitter_address, &packet[header_len + 10], 6);
-		memcpy(&airodump.BeaconFrame.BSSID, &packet[header_len + 16], 6);
+		memcpy(&airodump.beaconFrame.Transmitter_address, &packet[header_len + 10], 6);
+		memcpy(&airodump.beaconFrame.BSSID, &packet[header_len + 16], 6);
 
 		int wireless_start = header_len + 24;
 		int fixed_para = 12;
 
-		memcpy(&airodump.WirelessManagement.Fixed_Parameters, &packet[wireless_start], 12);
+		memcpy(&airodump.wirelessManagement.Fixed_Parameters, &packet[wireless_start], 12);
 
 		int first_tag_len = packet[wireless_start+fixed_para+1]; /* 61 */
-		memcpy(&airodump.WirelessManagement.SSID, &packet[wireless_start+fixed_para+2], first_tag_len); /* 68 */
+		memcpy(&airodump.wirelessManagement.SSID, &packet[wireless_start+fixed_para+2], first_tag_len); /* 68 */
 
 		int second_tag_len = packet[wireless_start+fixed_para+2+first_tag_len+1]; /* 61 + 7 + 2*/ /* 70 */
-		memcpy(&airodump.WirelessManagement.Supported_Rates, &packet[wireless_start+fixed_para+2+first_tag_len+2], second_tag_len); /*71 부터 +8*/
+		memcpy(&airodump.wirelessManagement.Supported_Rates, &packet[wireless_start+fixed_para+2+first_tag_len+2], second_tag_len); /*71 부터 +8*/
 
 		int third_tag_len = packet[wireless_start+fixed_para+2+first_tag_len+2+second_tag_len+1]; /* 70 -1 + 1 + 8*/ /* 80 */
-		memcpy(&airodump.WirelessManagement.Current_Channel, &packet[wireless_start+fixed_para+2+first_tag_len+2+second_tag_len+2], third_tag_len);
+		memcpy(&airodump.wirelessManagement.Current_Channel, &packet[wireless_start+fixed_para+2+first_tag_len+2+second_tag_len+2], third_tag_len);
 
 		
 		printf("start!");
@@ -90,17 +89,17 @@ int main(int argc, char* argv[]) {
 
 		// copy packet data to Airodump
 		// beaconFrame check
-		if(memcmp(&airodump.BeaconFrame.Type_Beacon, &beaconCheck, 1) == 0){
+		if(memcmp(&airodump.beaconFrame.Type_Beacon, &beaconCheck, 1) == 0){
 
-			printf("%02x", airodump.RadiotapHeader.it_signal);
+			printf("%02x", airodump.radiotapHeader.it_signal);
 			
-			printf("%02x:%02x:%02x:%02x:%02x:%02x \t", airodump.BeaconFrame.BSSID);
-			printf("%02x:%02x:%02x:%02x:%02x:%02x \t", airodump.BeaconFrame.Receiver_address);
-			printf("%02x:%02x:%02x:%02x:%02x:%02x \t", airodump.BeaconFrame.Transmitter_address);
+			printf("%02x:%02x:%02x:%02x:%02x:%02x \t", airodump.beaconFrame.BSSID);
+			printf("%02x:%02x:%02x:%02x:%02x:%02x \t", airodump.beaconFrame.Receiver_address);
+			printf("%02x:%02x:%02x:%02x:%02x:%02x \t", airodump.beaconFrame.Transmitter_address);
 			
 
-			printf("%d \t", airodump.WirelessManagement.Current_Channel);
-			printf("%s \t", airodump.WirelessManagement.SSID);
+			printf("%d \t", airodump.wirelessManagement.Current_Channel);
+			printf("%s \t", airodump.wirelessManagement.SSID);
 
 		}
 		else
