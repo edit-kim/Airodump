@@ -3,8 +3,8 @@
 #include <iostream>
 
 typedef struct BeaconFrame {
-    u_int8_t Type_Beacon;
-    char Receiver_address[12]; 
-    char Transmitter_address[12];
-    char BSSID[12];
+    u_int8_t type_Beacon;
+    char Receiver_address[18]; 
+    char Transmitter_address[18];
+    char BSSID[18];
 }BeaconFrame;
