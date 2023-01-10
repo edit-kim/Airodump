@@ -10,4 +10,5 @@ typedef struct AirodumpData {
     RadiotapHeader radiotapHeader;
     BeaconFrame beaconFrame;
     WirelessManagement wirelessManagement;
+    int beacon = 0;
 }AirodumpData;

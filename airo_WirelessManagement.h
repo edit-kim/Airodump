@@ -6,7 +6,7 @@
 
 typedef struct WirelessManagement {
     char Fixed_Parameters[12];
-    char* SSID;
+    char SSID[25];
     char* Supported_Rates;
-    int Current_Channel;
+    int8_t Current_Channel;
 }WirelessManagement;
